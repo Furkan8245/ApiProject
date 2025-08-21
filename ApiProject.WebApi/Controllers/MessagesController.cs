@@ -56,8 +56,12 @@ namespace ApiProject.WebApi.Controllers
             _context.Messages.Add(value);
             _context.SaveChanges();
             return Ok("Mesaj güncelleme işlemi başarılı şekilde kaydedilmiştir.");
-
-
+        }
+        [HttpGet("MessageListByIdReadFalse")]
+        public IActionResult MessageListByIdReadFalse()
+        {
+            var value = _context.Messages.Where(x => x.IsRead == false).ToList();
+            return Ok(value);
         }
     }
 }
