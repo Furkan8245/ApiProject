@@ -56,11 +56,5 @@ namespace ApiProject.WebApi.Controllers
             _context.SaveChanges();
             return Ok("Güncelleme başarılı şekilde kaydedilmiştir.");
         }
-       
-       
-      
-
-
-
     }
 }

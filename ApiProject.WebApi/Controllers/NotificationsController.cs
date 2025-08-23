@@ -1,5 +1,7 @@
 ﻿using ApiProject.WebApi.Context;
+using ApiProject.WebApi.Dtos.NotificationDtos;
 using ApiProject.WebApi.Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,48 +11,50 @@ namespace ApiProject.WebApi.Controllers
     [ApiController]
     public class NotificationsController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly ApiContext _context;
 
-        public CategoriesController(ApiContext context)
+        public NotificationsController(IMapper mapper, ApiContext context)
         {
+            _mapper = mapper;
             _context = context;
         }
         [HttpGet]
-        public IActionResult CategoryList()
+        public IActionResult NotificationList()
         {
-            var values = _context.Categories.ToList();
-            return Ok(values);
+            var values = _context.Notifications.ToList();
+            return Ok(_mapper.Map<List<ResultNotificationDto>>(values));
         }
-
         [HttpPost]
-        public IActionResult CreateCategory(Category category)
+        public IActionResult CreateNotification(CreateNotificationDto createNotificationDto)
         {
-            _context.Categories.Add(category);
+            var value = _mapper.Map<Notification>(createNotificationDto);
+            _context.Notifications.Add(value);
             _context.SaveChanges();
-            return Ok("Kategori ekleme işlemi başarı ile kaydedildi.");
+            return Ok("Ekleme işlemi başarılı olmuştur.");
+
         }
         [HttpDelete]
-        public IActionResult DeleteCategory(int id)
+        public IActionResult DeleteNotification(int id)
         {
-            var value = _context.Categories.Find(id);
-            _context.Categories.Remove(value);
+            var value = _context.Notifications.Find(id);
+            _context.Notifications.Remove(value);
             _context.SaveChanges();
-            return Ok("Kategori silme işlemi başarı ile kaydedildi.");
+            return Ok("Silme İşlemi başarı ile kaydedilmiştir.");
         }
-        [HttpGet("GetCategory")]
-        public IActionResult GetCategory(int id)
+        [HttpGet("GetNotification")]
+        public IActionResult GetNotification(int id)
         {
-            var value = _context.Categories.Find(id);
-            return Ok(value);
-
+            var value = _context.Notifications.Find();
+            return Ok(_mapper.Map<GetNotificationByIdDto>(value));
         }
         [HttpPut]
-        public IActionResult UpdateCategory(Category category)
+        public IActionResult UpdateNotification(UpdateNotificationDto updateNotificationDto)
         {
-            _context.Categories.Update(category);
+            var value = _mapper.Map<Notification>(updateNotificationDto);
+            _context.Notifications.Update(value);
             _context.SaveChanges();
-            return Ok("Kategori güncelleme işlemi başarı ile kaydedildi.");
+            return Ok("Güncelleme başarılı şekilde kaydedilmiştir.");
         }
-
     }
 }
