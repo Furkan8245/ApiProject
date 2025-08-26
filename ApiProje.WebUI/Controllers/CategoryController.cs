@@ -60,5 +60,7 @@ namespace ApiProject.WebUI.Controllers
             var value = JsonConvert.DeserializeObject<GetCategoryByIdDto>(jsonData);
             return View(value);
         }
+        
+         
     }
 }
