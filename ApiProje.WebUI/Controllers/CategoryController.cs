@@ -60,7 +60,17 @@ namespace ApiProject.WebUI.Controllers
             var value = JsonConvert.DeserializeObject<GetCategoryByIdDto>(jsonData);
             return View(value);
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateCategory(UpdateCategoryDto updateCategoryDto)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(updateCategoryDto);
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            await client.PutAsync("https://localhost:7162/api/Categories/", stringContent);
+            return RedirectToAction("CategoryList");
+        } 
         
-         
+
+
     }
 }
