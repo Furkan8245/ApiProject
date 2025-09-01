@@ -21,7 +21,9 @@
                             <input type="text" asp-for="Price" class="form-control" />
                             <br />
                             <label>Ürün Kategorisi</label>
-                            <input type="text" asp-for="CategoryId" class="form-control" />
+                            <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.categoryValues">
+								<option value="">--Kategori Seçiniz--</option>
+                            </select>
                             <br />
                             <label>Ürün Görsel URL</label>
                             <input type="text" asp-for="ImageUrl" class="form-control" />
