@@ -21,7 +21,7 @@
                             <input type="text" asp-for="Price" class="form-control" />
                             <br />
                             <label>Ürün Kategorisi</label>
-                            <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.categoryValues">
+                            <select asp-for="CategoryId" class="form-control" asp-items="(IEnumerable<SelectListItem>) ViewBag.v">
 								<option value="">--Kategori Seçiniz--</option>
                             </select>
                             <br />
@@ -31,7 +31,7 @@
                             <label>Ürün Açıklaması</label>
                             <textarea class="from-control" asp-for="ProductDescription" rows="5"></textarea>
                             <br />
-                            <button class="btn btn-primary">Kategori Oluştur</button>
+                            <button class="btn btn-primary">Ürün Oluştur</button>
                         </form>
                     </div>
                 </div>
