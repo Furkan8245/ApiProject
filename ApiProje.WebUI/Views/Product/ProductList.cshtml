@@ -20,6 +20,7 @@
 									<th scope="col">#</th>
 									<th scope="col">Ürün Adı</th>
 									<th scope="col">Fiyat</th>
+									<th scope="col">Ürün Kategori</th>
 									<th scope="col">Sil</th>
 									<th scope="col">Güncelle</th>
 								</tr>
@@ -32,6 +33,7 @@
 										<th scope="row">@count</th>
 										<td>@item.ProductName</td>
 										<td>@item.Price</td>
+										<td>@item.CategoryName</td>
 										<td><a href="/Category/DeleteProduct/@item.ProductId/" class="btn btn-danger">Sil</a></td>
 										<td><a href="/Category/UpdateProduct/@item.ProductId/" class="btn btn-success">Güncelle</a></td>
 									</tr>
