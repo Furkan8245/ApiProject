@@ -72,8 +72,8 @@ namespace ApiProject.WebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var responseMessage = await client.GetAsync("https://localhost:7162/api/Products/GetProducts?id=" + id);
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
-            var value = JsonConvert.DeserializeObject<GetProductByIdDto>(jsonData);
-            return View(value);
+            var values = JsonConvert.DeserializeObject<GetProductByIdDto>(jsonData);
+            return View(values);
         }
         [HttpPost]
         public async Task<IActionResult> UpdateProduct(UpdateProductDto updateProductDto)
