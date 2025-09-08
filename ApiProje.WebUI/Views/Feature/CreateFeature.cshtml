@@ -1,19 +1,20 @@
-﻿@model GetFeatureByIdDto
+﻿@model CreateFeatureDto
 @{
-    ViewData["Title"] = "UpdateFeature";
+    ViewData["Title"] = "CreateFeature";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
+
+
 <section class="section">
     <div class="section-body">
         <div class="row">
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Öne Çıkan Alan Güncelleme Sayfası</h4>
+                        <h4>Öne Çıkan Alan Ekleme Sayfası</h4>
                     </div>
                     <div class="card-body">
                         <form method="post">
-                            <input type="hidden" asp-for="FeatureId" />
                             <label>Başlık</label>
                             <input type="text" asp-for="Title" class="form-control" />
                             <br />
@@ -29,7 +30,7 @@
                             <label>Video URL (Embed Link)</label>
                             <input type="text" asp-for="VideoUrl" class="form-control" />
                             <br />
-                            <button class="btn btn-success">Öne Çıkan Alanı Güncelle</button>
+                            <button class="btn btn-primary">Öne Çıkan Alanı Oluştur</button>
                         </form>
                     </div>
                 </div>
@@ -37,8 +38,6 @@
         </div>
     </div>
 </section>
-
-
 
 
 
