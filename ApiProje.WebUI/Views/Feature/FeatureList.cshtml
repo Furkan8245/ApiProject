@@ -41,24 +41,13 @@
                                 }
                             </tbody>
                         </table>
-                        @if (Model.Count < 1)
+                        @if (Model.Count == 1)
                         {
-                            <div class="alert alert-warning">
-                                Öne çıkan alan bilgisi eksik! Lütfen bir tane ekleyin.
-                                <a href="/Feature/CreateFeature/" class="btn btn-info">Feature Ekle</a>
-                            </div>
-                        }
-                        else if (Model.Count == 1)
-                        {
-                            <div class="alert alert-success">
-                                Öne çıkan alan bilgisi mevcut.
-                            </div>
+                            <a href="#" class="btn btn-info" onclick="return false;">Feature Mevcut</a>
                         }
                         else
                         {
-                            <div class="alert alert-danger">
-                                Öne çıkan alan bilgisi hatalı! 1'den fazla girdi var.
-                            </div>
+                            <a href="/Feature/CreateFeature/" class="btn btn-info">Yeni Feature Girişi</a>
                         }
 
                        
