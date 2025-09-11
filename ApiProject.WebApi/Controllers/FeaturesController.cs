@@ -45,7 +45,7 @@ namespace ApiProject.WebApi.Controllers
         [HttpGet("GetFeature")]
         public IActionResult GetFeature(int id)
         {
-            var value = _context.Features.Find();
+            var value = _context.Features.Find(id);
             return Ok(_mapper.Map<GetByIdFeatureDto>(value));
         }
         [HttpPut]
