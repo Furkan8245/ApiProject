@@ -1,6 +1,6 @@
-﻿namespace ApiProject.WebApi.Dtos.AboutDtos
+﻿namespace ApiProject.WebUI.Dtos.AboutDtos
 {
-    public class ResaultAboutDto
+    public class GetAboutByIdDto
     {
         public int AboutId { get; set; }
         public string Title { get; set; }
