@@ -1,8 +1,38 @@
-﻿
+﻿@model List<ApiProject.WebUI.Dtos.AboutDtos.CreateAboutDto>
 @{
     ViewData["Title"] = "CreateAbout";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
+<section class="section">
+    <div class="section-body">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Hakkımda Alanı Ekleme Sayfası</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <label>Başlık</label>
+                            <input type="text" asp-for="Title" class="form-control"/>
+                            <br />
+                            <button class="btn btn-primary">Kategori Oluştur</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<h1>CreateAbout</h1>
+
+
+
+
+
+
+
+
+
+
 
