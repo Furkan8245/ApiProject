@@ -1,4 +1,4 @@
-﻿@model List<ApiProject.WebUI.Dtos.AboutDtos.CreateAboutDto>
+﻿@model CreateAboutDto
 @{
     ViewData["Title"] = "CreateAbout";
     Layout = "~/Views/AdminLayout/Index.cshtml";
@@ -12,11 +12,23 @@
                         <h4>Hakkımda Alanı Ekleme Sayfası</h4>
                     </div>
                     <div class="card-body">
-                        <form method="post">
+                        <form asp-action="CreateAbout" method="post">
                             <label>Başlık</label>
-                            <input type="text" asp-for="Title" class="form-control"/>
+                            <input type="text" asp-for="Title" class="form-control" />
                             <br />
-                            <button class="btn btn-primary">Kategori Oluştur</button>
+                            <label>Rezervasyon Numarası</label>
+                            <input type="text" asp-for="ReservationNumber" class="form-control" />
+                            <br />
+                            <label>Görsel URL</label>
+                            <input type="text" asp-for="ImageUrl" class="form-control" />
+                            <br />
+                            <label>Video Kapak Görseli</label>
+                            <input type="text" asp-for="VideoCoverImageUrl" class="form-control" />
+                            <br />
+                            <label>Video Linki(Embed Olarak)</label>
+                            <input type="text" asp-for="VideoUrl" class="form-control" />
+                            <br />
+                            <button class="btn btn-primary">Hakkımda Ekle</button>
                         </form>
                     </div>
                 </div>
