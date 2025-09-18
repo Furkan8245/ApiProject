@@ -1,8 +1,53 @@
-﻿
+﻿@model GetAboutByIdDto
+
 @{
     ViewData["Title"] = "UpdateAbout";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
 
-<h1>UpdateAbout</h1>
+<section class="section">
+    <div class="section-body">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Hakkımda Alanı Ekleme Sayfası</h4>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="CreateAbout" method="post">
+                            <label>Başlık</label>
+                            <input type="text" asp-for="Title" class="form-control" />
+                            <br />
+                            <label>Rezervasyon Numarası</label>
+                            <input type="text" asp-for="ReservationNumber" class="form-control" />
+                            <br />
+                            <label>Görsel URL</label>
+                            <input type="text" asp-for="ImageUrl" class="form-control" />
+                            <br />
+                            <label>Video Kapak Görseli</label>
+                            <input type="text" asp-for="VideoCoverImageUrl" class="form-control" />
+                            <br />
+                            <label>Video Linki(Embed Olarak)</label>
+                            <input type="text" asp-for="VideoUrl" class="form-control" />
+                            <br />
+                            <button class="btn btn-primary">Hakkımda Alanı Güncelle</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
 
