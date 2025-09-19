@@ -14,7 +14,8 @@
                         <h4>Hakkımda Alanı Ekleme Sayfası</h4>
                     </div>
                     <div class="card-body">
-                        <form asp-action="CreateAbout" method="post">
+                        <form method="post">
+                            <input type="hidden" asp-for="AboutId" />
                             <label>Başlık</label>
                             <input type="text" asp-for="Title" class="form-control" />
                             <br />

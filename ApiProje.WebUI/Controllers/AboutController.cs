@@ -58,9 +58,14 @@ namespace ApiProject.WebUI.Controllers
         {
             var client = _httpClientFactory.CreateClient();
             var responseMessage = await client.GetAsync("https://localhost:7020/api/Abouts/GetAbout?id=" + id);
-            var jsonData = await responseMessage.Content.ReadAsStringAsync();
-            var value = JsonConvert.DeserializeObject<GetAboutByIdDto>(jsonData);
-            return View(value);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonData = await responseMessage.Content.ReadAsStringAsync();
+                var value = JsonConvert.DeserializeObject<GetAboutByIdDto>(jsonData);
+                return View(value);
+            }
+            return View();
+
         }
 
 
