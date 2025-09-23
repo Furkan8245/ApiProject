@@ -1,4 +1,5 @@
 ﻿using ApiProject.WebUI.Dtos.ServicesDtos;
+using ApiProject.WebUI.Dtos.WhyChooseYumulDtos;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
@@ -21,7 +22,7 @@ namespace ApiProject.WebUI.Controllers
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var value = JsonConvert.DeserializeObject<List<ResultServicesDto>>(jsonData);
+                var value = JsonConvert.DeserializeObject<List<ResultWhyChooseYumuldto>>(jsonData);
                 return View(value);
             }
             return View();
@@ -32,10 +33,10 @@ namespace ApiProject.WebUI.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateServices(CreateServicesDto createServicesDto)
+        public async Task<IActionResult> CreateServices(CreateWhyChooseYumulDto createWhyChooseYumulDto)
         {
             var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createServicesDto);
+            var jsonData = JsonConvert.SerializeObject(createWhyChooseYumulDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var responseMessage = await client.PostAsync("https://localhost:7162/api/Categories", stringContent);
             if (responseMessage.IsSuccessStatusCode)
