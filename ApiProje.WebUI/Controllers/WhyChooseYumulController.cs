@@ -1,5 +1,4 @@
-﻿using ApiProject.WebUI.Dtos.ServicesDtos;
-using ApiProject.WebUI.Dtos.WhyChooseYumulDtos;
+﻿using ApiProject.WebUI.Dtos.WhyChooseYumulDtos;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
@@ -28,46 +27,46 @@ namespace ApiProject.WebUI.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult CreateServices()
+        public IActionResult CreateWhyChooseYumul()
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> CreateServices(CreateWhyChooseYumulDto createWhyChooseYumulDto)
+        public async Task<IActionResult> CreateWhyChooseYumul(CreateWhyChooseYumulDto createWhyChooseYumulDto)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createWhyChooseYumulDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:7162/api/Categories", stringContent);
+            var responseMessage = await client.PostAsync("https://localhost:7162/api/Services", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
-                return RedirectToAction("ServicesList");
+                return RedirectToAction("WhyChooseYumulList");
             }
             return View();
         }
 
-        public async Task<IActionResult> DeleteServices(int id)
+        public async Task<IActionResult> DeleteWhyChooseYumul(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            await client.DeleteAsync("https://localhost:7162/api/Categories?id=" + id);
-            return RedirectToAction("ServicesList");
+            await client.DeleteAsync("https://localhost:7162/api/Services?id=" + id);
+            return RedirectToAction("WhyChooseYumulList");
         }
         [HttpGet]
-        public async Task<IActionResult> UpdateServices(int id)
+        public async Task<IActionResult> UpdateWhyChooseYumul(int id)
         {
             var client = _httpClientFactory.CreateClient();
             var responseMessage = await client.GetAsync("https://localhost:7162/api/Categories/GetServices?id=" + id);
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
-            var value = JsonConvert.DeserializeObject<GetServicesByIdDto>(jsonData);
+            var value = JsonConvert.DeserializeObject<GetWhyChooseYumulByIdDto>(jsonData);
             return View(value);
         }
         [HttpPost]
-        public async Task<IActionResult> UpdateServices(UpdateServicesDto updateServicesDto)
+        public async Task<IActionResult> UpdateWhyChooseYumul(UpdateWhyChooseYumulDto updateWhyChooseYumulDto)
         {
             var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(updateServicesDto);
+            var jsonData = JsonConvert.SerializeObject(updateWhyChooseYumulDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            await client.PutAsync("https://localhost:7162/api/Categories/", stringContent);
+            await client.PutAsync("https://localhost:7162/api/Services/", stringContent);
             return RedirectToAction("ServicesList");
         }
 
