@@ -67,7 +67,7 @@ namespace ApiProject.WebUI.Controllers
             var jsonData = JsonConvert.SerializeObject(updateWhyChooseYumulDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
             await client.PutAsync("https://localhost:7162/api/Services/", stringContent);
-            return RedirectToAction("ServicesList");
+            return RedirectToAction("WhyChooseYumulList");
         }
 
     }
