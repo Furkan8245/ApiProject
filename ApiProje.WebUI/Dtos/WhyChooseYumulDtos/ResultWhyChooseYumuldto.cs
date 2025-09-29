@@ -1,6 +1,6 @@
 ﻿namespace ApiProject.WebUI.Dtos.WhyChooseYumulDtos
 {
-    public class ResultWhyChooseYumuldto
+    public class ResultWhyChooseYumulDto
     {
         public int ServiceId { get; set; }
         public string Title { get; set; }

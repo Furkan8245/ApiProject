@@ -21,7 +21,7 @@ namespace ApiProject.WebUI.Controllers
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var value = JsonConvert.DeserializeObject<List<ResultWhyChooseYumuldto>>(jsonData);
+                var value = JsonConvert.DeserializeObject<List<ResultWhyChooseYumulDto>>(jsonData);
                 return View(value);
             }
             return View();
@@ -55,7 +55,7 @@ namespace ApiProject.WebUI.Controllers
         public async Task<IActionResult> UpdateWhyChooseYumul(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7162/api/Categories/GetServices?id=" + id);
+            var responseMessage = await client.GetAsync("https://localhost:7162/api/Services/GetServices?id=" + id);
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var value = JsonConvert.DeserializeObject<GetWhyChooseYumulByIdDto>(jsonData);
             return View(value);
