@@ -26,11 +26,13 @@ namespace ApiProject.WebUI.Controllers
             }
             return View();
         }
+
         [HttpGet]
         public IActionResult CreateWhyChooseYumul()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateWhyChooseYumul(CreateWhyChooseYumulDto createWhyChooseYumulDto)
         {
@@ -51,24 +53,36 @@ namespace ApiProject.WebUI.Controllers
             await client.DeleteAsync("https://localhost:7162/api/Services?id=" + id);
             return RedirectToAction("WhyChooseYumulList");
         }
+
         [HttpGet]
         public async Task<IActionResult> UpdateWhyChooseYumul(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7162/api/Services/GetServices?id=" + id);
-            var jsonData = await responseMessage.Content.ReadAsStringAsync();
-            var value = JsonConvert.DeserializeObject<GetWhyChooseYumulByIdDto>(jsonData);
-            return View(value);
+            var responseMessage = await client.GetAsync("https://localhost:7162/api/Services/GetService?id=" + id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonData = await responseMessage.Content.ReadAsStringAsync();
+                var value = JsonConvert.DeserializeObject<GetWhyChooseYumulByIdDto>(jsonData);
+                return View(value);
+            }
+            return RedirectToAction("WhyChooseYumulList");
         }
+
         [HttpPost]
         public async Task<IActionResult> UpdateWhyChooseYumul(UpdateWhyChooseYumulDto updateWhyChooseYumulDto)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateWhyChooseYumulDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            await client.PutAsync("https://localhost:7162/api/Services/", stringContent);
-            return RedirectToAction("WhyChooseYumulList");
-        }
 
+            var responseMessage = await client.PutAsync("https://localhost:7162/api/Services", stringContent);
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("WhyChooseYumulList");
+            }
+
+            return View(updateWhyChooseYumulDto);
+        }
     }
 }
