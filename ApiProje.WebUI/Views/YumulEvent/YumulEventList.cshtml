@@ -1,0 +1,56 @@
+﻿@model List<ResultYumulEventDto>
+
+@{
+    ViewData["Title"] = "YumulEventList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<section class="section">
+    <div class="section-body">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Etkinlik Organizasyon Listesi</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Organizasyon Başlığı</th>
+                                    <th scope="col">Organizasyon Açıklaması</th>
+                                    <th scope="col">Organizasyon Fiyatı</th>
+                                    <th scope="col">Sil</th>
+                                    <th scope="col">Güncelle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    count++;
+                                    <tr>
+                                        <th scope="row">@count</th>
+                                        <td>@item.Title</td>
+                                        <td>@item.Description</td>
+                                        <td>@item.Price</td>
+                                        <td><a href="/YumulEvent/DeleteYumulEvent/@item.YumulEventId/" class="btn btn-danger">Sil</a></td>
+                                        <td><a href="/YumulEvent/UpdateYumulEvent/@item.YumulEventId/" class="btn btn-success">Güncelle</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <a href="/YumulEvent/CreateYumulEvent/" class="btn btn-info">Yeni Organizasyon Girişi</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+

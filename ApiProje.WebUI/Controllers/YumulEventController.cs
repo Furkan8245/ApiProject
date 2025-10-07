@@ -9,6 +9,11 @@ namespace ApiProject.WebUI.Controllers
     public class YumulEventController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
+
+        public YumulEventController(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
         public async Task<IActionResult> YumulEventList()
         {
             var client = _httpClientFactory.CreateClient();
