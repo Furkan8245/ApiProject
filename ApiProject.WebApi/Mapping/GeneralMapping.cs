@@ -4,6 +4,7 @@ using ApiProject.WebApi.Dtos.FeatureDtos;
 using ApiProject.WebApi.Dtos.MessageDtos;
 using ApiProject.WebApi.Dtos.NotificationDtos;
 using ApiProject.WebApi.Dtos.ProductDtos;
+using ApiProject.WebApi.Dtos.ReservationDtos;
 using ApiProject.WebApi.Entities;
 using AutoMapper;
 
@@ -41,7 +42,12 @@ namespace ApiProject.WebApi.Mapping
             CreateMap<About, GetAboutByIdDto>().ReverseMap();
             CreateMap<About, UpdateAboutDto>().ReverseMap();
 
-            
+
+            CreateMap<Reservation, ResultReservationDto>().ReverseMap();
+            CreateMap<Reservation, CreateResevationDto>().ReverseMap();
+            CreateMap<Reservation, GetResevationByIdDto>().ReverseMap();
+            CreateMap<Reservation, UpdateResevationDto>().ReverseMap();
+
 
 
 
