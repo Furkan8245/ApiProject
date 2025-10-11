@@ -1,6 +1,6 @@
 ﻿namespace ApiProject.WebApi.Dtos.ImageDtos
 {
-    public class GetByIdImageDto
+    public class UpdateImageDto
     {
         public int ImageId { get; set; }
         public string Title { get; set; }
