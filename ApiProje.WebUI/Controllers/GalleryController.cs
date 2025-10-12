@@ -1,11 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ApiProject.WebUI.Dtos.CategoryDtos;
+using ApiProject.WebUI.Dtos.ImageDtos;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ApiProject.WebUI.Controllers
 {
     public class GalleryController : Controller
     {
-        public IActionResult ImageList()
+        private readonly IHttpClientFactory _httpClientFactory;
+        public GalleryController(IHttpClientFactory httpClientFactory)
         {
+            _httpClientFactory = httpClientFactory;
+        }
+        public async Task<IActionResult> ImageList()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("https://localhost:7162/api/Images");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonData = await responseMessage.Content.ReadAsStringAsync();
+                var value = JsonConvert.DeserializeObject<List<ResultImageDto>>(jsonData);
+                return View(value);
+            }
             return View();
         }
     }
