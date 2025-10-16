@@ -21,10 +21,10 @@ namespace ApiProject.WebUI.Controllers
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var value = JsonConvert.DeserializeObject<List<ResultMessageDto>>(jsonData);
-                return View(value);
+                var values = JsonConvert.DeserializeObject<List<ResultMessageDto>>(jsonData);
+                return View(values);
             }
-            return View();
+            return View(new List<ResultMessageDto>());
         }
         [HttpGet]
         public IActionResult CreateMessage()
