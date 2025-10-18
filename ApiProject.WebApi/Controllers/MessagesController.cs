@@ -50,13 +50,17 @@ namespace ApiProject.WebApi.Controllers
             return Ok(_mapper.Map<GetByIdMessageDto>(value));
         }
         [HttpPut]
+        [HttpPut]
         public IActionResult UpdateMessage(UpdateMessageDto updateMessageDto)
         {
-            var value = _mapper.Map<Message>(updateMessageDto);
-            _context.Messages.Add(value);
+            var existingMessage = _context.Messages.Find(updateMessageDto.MessageId);
+            if (existingMessage == null) return NotFound();
+
+            _mapper.Map(updateMessageDto, existingMessage);
             _context.SaveChanges();
             return Ok("Mesaj güncelleme işlemi başarılı şekilde kaydedilmiştir.");
         }
+
         [HttpGet("MessageListByIdReadFalse")]
         public IActionResult MessageListByIdReadFalse()
         {

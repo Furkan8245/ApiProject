@@ -32,18 +32,27 @@ namespace ApiProject.WebUI.Controllers
             return View();
         }
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> CreateMessage(CreateMessageDto createMessageDto)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createMessageDto);
-            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            // API adresi doğru: /api/Messages
             var responseMessage = await client.PostAsync("https://localhost:7162/api/Messages", stringContent);
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("MessageList");
             }
+
+            var error = await responseMessage.Content.ReadAsStringAsync();
+            Console.WriteLine("API Hatası: " + error);
+
             return View();
         }
+
 
         public async Task<IActionResult> DeleteMessage(int id)
         {
@@ -69,8 +78,16 @@ namespace ApiProject.WebUI.Controllers
             await client.PutAsync("https://localhost:7162/api/Messages/", stringContent);
             return RedirectToAction("MessageList");
         }
+        [HttpGet]
+        public async Task<IActionResult> AnswerMessageWithGemini(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("https://localhost:7162/api/Messages/GetMessage?id=" + id);
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var value = JsonConvert.DeserializeObject<GetByIdMessageDto>(jsonData);
+            return View(value);
 
 
-
+        }
     }
 }

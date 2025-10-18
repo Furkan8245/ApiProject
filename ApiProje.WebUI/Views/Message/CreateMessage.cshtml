@@ -8,26 +8,35 @@
 <section class="section">
     <div class="section-body">
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4>Yeni Mesaj Ekleme Sayfası</h4>
                     </div>
                     <div class="card-body">
-                        <form method="post">
-                            <label>Göndericinin Adı & Soyadı</label>
-                            <input type="text" asp-for="NameSurname" class="form-control" />
-                            <br />
-                            <label>Gönderici Email</label>
-                            <input type="text" asp-for="Email" class="form-control" />
-                            <br />
-                            <label>Mesaj Konusu</label>
-                            <input type="text" asp-for="Subject" class="form-control" />
-                            <br />
-                            <label>Mesaj İçeriği</label>
-                            <input type="text" asp-for="MessageDetails" class="form-control" />
-                            <br />
-                            <button class="btn btn-primary">Mesajı Oluştur</button>
+                        <!-- Düzgün action ve method -->
+                        <form asp-action="CreateMessage" asp-controller="Message" method="post">
+                            <div class="form-group">
+                                <label>Göndericinin Adı & Soyadı</label>
+                                <input type="text" asp-for="NameSurname" class="form-control" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Gönderici Email</label>
+                                <input type="email" asp-for="Email" class="form-control" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Mesaj Konusu</label>
+                                <input type="text" asp-for="Subject" class="form-control" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Mesaj İçeriği</label>
+                                <textarea asp-for="MessageDetails" class="form-control large-textarea" rows="6" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Mesajı Oluştur</button>
                         </form>
                     </div>
                 </div>
@@ -35,6 +44,14 @@
         </div>
     </div>
 </section>
+
+<style>
+    .large-textarea {
+        width: 100%;
+        height: 250px;
+        resize: both;
+    }
+</style>
 
 
 
