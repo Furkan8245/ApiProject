@@ -50,7 +50,6 @@ namespace ApiProject.WebApi.Controllers
             return Ok(_mapper.Map<GetByIdMessageDto>(value));
         }
         [HttpPut]
-        [HttpPut]
         public IActionResult UpdateMessage(UpdateMessageDto updateMessageDto)
         {
             var existingMessage = _context.Messages.Find(updateMessageDto.MessageId);

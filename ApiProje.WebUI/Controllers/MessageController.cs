@@ -32,14 +32,16 @@ namespace ApiProject.WebUI.Controllers
             return View();
         }
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> CreateMessage(CreateMessageDto createMessageDto)
         {
+            createMessageDto.SendDate = DateTime.Now;
+            createMessageDto.IsRead = false; // Admin okuyunca true olacak
+            createMessageDto.Status = "Yeni"; // veya uygun bir varsayılan değer
+
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createMessageDto);
             var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            // API adresi doğru: /api/Messages
             var responseMessage = await client.PostAsync("https://localhost:7162/api/Messages", stringContent);
 
             if (responseMessage.IsSuccessStatusCode)
@@ -48,8 +50,7 @@ namespace ApiProject.WebUI.Controllers
             }
 
             var error = await responseMessage.Content.ReadAsStringAsync();
-            Console.WriteLine("API Hatası: " + error);
-
+            ViewBag.ApiError = error;
             return View();
         }
 
