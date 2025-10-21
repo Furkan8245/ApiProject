@@ -24,7 +24,7 @@ namespace ApiProject.WebUI.Controllers
                 var values = JsonConvert.DeserializeObject<List<ResultMessageDto>>(jsonData);
                 return View(values);
             }
-            return View(new List<ResultMessageDto>());
+            return View();
         }
         [HttpGet]
         public IActionResult CreateMessage()
@@ -76,8 +76,16 @@ namespace ApiProject.WebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateMessageDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            await client.PutAsync("https://localhost:7162/api/Messages/", stringContent);
+            var response = await client.PutAsync("https://localhost:7162/api/Messages", stringContent);
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                ViewBag.ApiError = error;
+                return View(updateMessageDto);
+            }
+
             return RedirectToAction("MessageList");
+
         }
         [HttpGet]
         public async Task<IActionResult> AnswerMessageWithGemini(int id)
