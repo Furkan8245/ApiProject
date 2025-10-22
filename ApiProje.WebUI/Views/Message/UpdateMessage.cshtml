@@ -1,8 +1,11 @@
-﻿@model GetByIdMessageDto
+﻿@model UpdateMessageDto
+
 @{
     ViewData["Title"] = "UpdateMessage";
     Layout = "~/Views/AdminLayout/Index.cshtml";
 }
+
+
 <section class="section">
     <div class="section-body">
         <div class="row">
@@ -26,6 +29,9 @@
                             <label>Mesaj İçeriği</label>
                             <input type="text" asp-for="MessageDetails" class="form-control" />
                             <br />
+                            <label>Mesaj Durumu</label>
+                            <input type="hidden" asp-for="Status" />
+                            <br />
                             <button class="btn btn-success">Mesajı Güncelle</button>
                         </form>
                     </div>
@@ -34,13 +40,3 @@
         </div>
     </div>
 </section>
-
-
-
-
-
-
-
-
-
-
