@@ -39,20 +39,16 @@ namespace ApiProject.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMessage(CreateMessageDto createMessageDto)
         {
-            createMessageDto.SendDate = DateTime.Now;
-            createMessageDto.IsRead = false;
-            createMessageDto.Status = "Yeni";
-
-            var client = _httpClientFactory.CreateClient();
+           var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createMessageDto);
-            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            var responseMessage = await client.PostAsync("https://localhost:7162/api/Messages", stringContent);
-
-            if (responseMessage.IsSuccessStatusCode)
-                return RedirectToAction("MessageList");
-
-            ViewBag.ApiError = await responseMessage.Content.ReadAsStringAsync();
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("https://localhost:7162/api/Messages", stringContent);
+            if (response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                ViewBag.ApiError = error;
+                return View(createMessageDto);
+            }
             return View();
         }
 
@@ -69,9 +65,9 @@ namespace ApiProject.WebUI.Controllers
         public async Task<IActionResult> UpdateMessage(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"https://localhost:7162/api/Messages/GetMessage?id={id}");
+            var responseMessage = await client.GetAsync("https://localhost:7162/api/Messages/GetMessage?id=" + id);
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
-            var value = JsonConvert.DeserializeObject<UpdateMessageDto>(jsonData); // Burayı UpdateMessageDto yaptık
+            var value = JsonConvert.DeserializeObject<GetByIdMessageDto>(jsonData); 
             return View(value);
         }
 
@@ -81,18 +77,10 @@ namespace ApiProject.WebUI.Controllers
         {
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateMessageDto);
-            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            var response = await client.PutAsync("https://localhost:7162/api/Messages", stringContent);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                ViewBag.ApiError = error;
-                return View(updateMessageDto); // Model tipini koruduk
-            }
-
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            await client.PutAsync("https://localhost:7162/api/Messages/", stringContent);
             return RedirectToAction("MessageList");
+
         }
 
         // Mesaja Cevap Görüntüleme

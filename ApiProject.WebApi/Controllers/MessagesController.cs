@@ -52,19 +52,9 @@ namespace ApiProject.WebApi.Controllers
         [HttpPut]
         public IActionResult UpdateMessage(UpdateMessageDto updateMessageDto)
         {
-            var existingMessage = _context.Messages.Find(updateMessageDto.MessageId);
-
-            if (existingMessage == null)
-            {
-                return NotFound("Güncellenmek istenen mesaj bulunamadı.");
-            }
-
-            existingMessage.NameSurname = updateMessageDto.NameSurname;
-            existingMessage.Email = updateMessageDto.Email;
-            existingMessage.Subject = updateMessageDto.Subject;
-            existingMessage.MessageDetails = updateMessageDto.MessageDetails;
+            var value = _mapper.Map<Message>(updateMessageDto);
+            _context.Messages.Update(value);
             _context.SaveChanges();
-
             return Ok("Mesaj Güncelleme İşlemi Başarılı");
         }
 
