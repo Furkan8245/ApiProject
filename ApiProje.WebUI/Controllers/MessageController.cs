@@ -1,6 +1,7 @@
 ﻿using ApiProject.WebUI.Dtos.MessageDtos;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Text;
 
 namespace ApiProject.WebUI.Controllers
@@ -85,12 +86,61 @@ namespace ApiProject.WebUI.Controllers
 
         // Mesaja Cevap Görüntüleme
         [HttpGet]
-        public async Task<IActionResult> AnswerMessageWithGemini(int id)
+        public async Task<IActionResult> AnswerMessageWithGemini(int id, string prompt)
         {
             var client = _httpClientFactory.CreateClient();
             var responseMessage = await client.GetAsync($"https://localhost:7162/api/Messages/GetMessage?id={id}");
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
-            var value = JsonConvert.DeserializeObject<UpdateMessageDto>(jsonData); // Burayı da UpdateMessageDto yaptık
+            var value = JsonConvert.DeserializeObject<GetByIdMessageDto>(jsonData);
+            prompt = value.MessageDetails;
+
+            var apiKey = "AIzaSyCAQt1Zi9zPJzm9U3eudXgiV5tCJyKiw7Q";
+
+
+            // 🌍 Gemini'nin metin üretim endpoint'i
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={apiKey}";
+
+            using var client2 = new HttpClient();
+
+            // 💬 Kullanıcı prompt'unu içeren istek gövdesi
+            var requestBody = new
+            {
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new[]
+                        {
+                            new { text =
+                                "Sen bir restoran için kullanıcıların göndermiş oldukları mesajları detaylı ve müşterilere karşı olumlu ve memnun edici cevaplar veren bir yapay zekasın. " + 
+                                "Amacımız kullanıcı tarafından gönderilen mesajlara  en olumlu ve en mantıklı cevapları sunabilmektir.  " +
+                                "Şimdi kullanıcıdan gelen prompt şu: " + prompt
+                            }
+                        }
+                    }
+                }
+            };
+
+            // JSON olarak serialize et
+            var json = System.Text.Json.JsonSerializer.Serialize(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // 📡 API isteği gönder
+            var response = await client.PostAsync(url, content);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                // 🔍 JSON cevabını çöz
+                var jsonObj = JObject.Parse(responseString);
+                var generatedText = jsonObj["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.ToString();
+
+                ViewBag.answerAI = generatedText ?? "Gemini’den bir yanıt alınamadı.";
+            }
+            else
+            {
+                ViewBag.answerAI = $"Hata oluştu: {response.StatusCode} - {responseString}";
+            }
             return View(value);
         }
     }

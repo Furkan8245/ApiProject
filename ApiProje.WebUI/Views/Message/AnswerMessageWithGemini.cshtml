@@ -15,15 +15,14 @@
                     <div class="card-body">
                         <form method="post">
                             <input type="hidden" asp-for="MessageId" />
-                            <label>Müşteri Mesajı</label>
-                            <textarea asp-for="MessageDetails" class="form-control" style="height:200px !important"  ></textarea>
+                            @* <label>Müşteri Mesajı</label> *@
+                            <textarea class="form-control" asp-for="MessageDetails" style="height:200px !important;"></textarea>
                             <br />
 
                             <label>Gemini Otomatik Cevabı</label>
-                            <textarea  class="form-control" style="height:200px !important"></textarea>
+                            <textarea class="form-control" style="height:200px !important;">@ViewBag.answerAI</textarea>
                             <br />
-							<button type="submit" class="btn btn-primary">Cevabı Mail Olarak Gönder</button>
-                            
+                            <button class="btn btn-primary">Cevabı Mail Olarak Gönder</button>
                         </form>
                     </div>
                 </div>
@@ -31,8 +30,6 @@
         </div>
     </div>
 </section>
-
-
 
 
 
