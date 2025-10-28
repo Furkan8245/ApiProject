@@ -150,15 +150,27 @@ namespace ApiProject.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(CreateMessageDto createMessageDto)
         {
+            createMessageDto.SendDate = DateTime.Now;
+            createMessageDto.IsRead = false;
+            createMessageDto.Status = "Aktif"; // API tarafında zorunlu alan olduğu için
+
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createMessageDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("https://localhost:7162/api/Messages", stringContent);
-            if (response.IsSuccessStatusCode)
+
+            var responseMessage = await client.PostAsync("https://localhost:7162/api/Messages", stringContent);
+
+            if (responseMessage.IsSuccessStatusCode)
             {
+                // ✅ Başarılıysa kullanıcıyı mesaj listesine yönlendir
                 return RedirectToAction("MessageList");
             }
-            return View();
+
+            // ❌ Başarısızsa hata mesajını ViewBag’e yazalım, debug için
+            var error = await responseMessage.Content.ReadAsStringAsync();
+            ViewBag.ApiError = error;
+
+            return View(createMessageDto);
         }
     }
 }
