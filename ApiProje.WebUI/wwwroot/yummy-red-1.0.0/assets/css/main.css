@@ -169,86 +169,73 @@ h6 {
 /* PHP Email Form Messages
 ------------------------------*/
 /* Modern Form Tasarýmý */
-.form-modern {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    padding: 40px;
-    max-width: 800px;
-    margin: auto;
-    transition: all 0.3s ease;
+/* Mesaj kutularý için genel stil */
+.php-email-form .message-box {
+    display: none;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    position: relative;
+    transition: all 0.4s ease;
 }
 
-    .form-modern input,
-    .form-modern textarea {
-        width: 100%;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 14px 18px;
-        font-size: 16px;
-        font-family: "Poppins", sans-serif;
-        transition: all 0.3s ease;
-        background-color: #f9f9f9;
-    }
-
-        .form-modern input:focus,
-        .form-modern textarea:focus {
-            border-color: #059652;
-            background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(5,150,82,0.1);
-            outline: none;
-        }
-
-    .form-modern button {
-        background: linear-gradient(135deg, #059652, #04b67b);
-        color: #fff;
-        border: none;
-        border-radius: 12px;
-        padding: 14px 36px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-        .form-modern button:hover {
-            background: linear-gradient(135deg, #04b67b, #059652);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(5,150,82,0.2);
-        }
-
-    .form-modern .col-md-6,
-    .form-modern .col-md-12 {
-        margin-bottom: 18px;
-    }
-
-    .form-modern textarea {
-        resize: none;
-    }
-
-/* Baþarýlý / Hata Mesajlarý */
+/* Baþarýlý mesaj */
 .php-email-form .sent-message {
-    display: none;
-    background: #059652;
-    color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    font-weight: 600;
+    background-color: #059652;
+    color: #ffffff;
 }
 
+/* Hata mesajý */
 .php-email-form .error-message {
-    display: none;
-    background: #df1529;
-    color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    font-weight: 600;
+    background-color: #df1529;
+    color: #ffffff;
 }
 
-section#contact {
-    background: linear-gradient(180deg, #f5f9f7, #ffffff);
-    padding: 60px 0;
+/* Loading mesajý */
+.php-email-form .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    color: #333333;
 }
+
+    .php-email-form .loading:before {
+        content: "";
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        border: 3px solid #059652;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Mesaj görünürlüðü ve animasyon */
+.php-email-form .show-message {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.php-email-form .message-box {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
 
 
 /*Orjinal kod baþlangýcý*/
