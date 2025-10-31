@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using System.Text.Json;
 
 namespace ApiProject.WebUI.Controllers
 {
@@ -150,25 +151,64 @@ namespace ApiProject.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(CreateMessageDto createMessageDto)
         {
-            createMessageDto.SendDate = DateTime.Now;
-            createMessageDto.IsRead = false;
-            createMessageDto.Status = "Aktif"; // API tarafında zorunlu alan olduğu için
-
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createMessageDto);
-            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            var responseMessage = await client.PostAsync("https://localhost:7162/api/Messages", stringContent);
-
-            if (responseMessage.IsSuccessStatusCode)
+            try
             {
-                // ✅ Başarılıysa kullanıcıyı mesaj listesine yönlendir
-                return RedirectToAction("MessageList");
-            }
+                // 1️⃣ LibreTranslate API ile Türkçe -> İngilizce çeviri
+                using (var client = new HttpClient())
+                {
+                    var translateBody = new
+                    {
+                        q = createMessageDto.MessageDetails, // çevrilecek metin
+                        source = "tr",                       // kaynak dil
+                        target = "en",                       // hedef dil
+                        format = "text"                      // düz metin olarak gönder
+                    };
 
-            // ❌ Başarısızsa hata mesajını ViewBag’e yazalım, debug için
-            var error = await responseMessage.Content.ReadAsStringAsync();
-            ViewBag.ApiError = error;
+                    var translateJson = System.Text.Json.JsonSerializer.Serialize(translateBody);
+                    var translateContent = new StringContent(translateJson, Encoding.UTF8, "application/json");
+
+                    // Ücretsiz çalışan servis (alternatif olarak kendi sunucunu kullanabilirsin)
+                    var translateResponse = await client.PostAsync("https://libretranslate.com/translate", translateContent);
+                    var translateResponseString = await translateResponse.Content.ReadAsStringAsync();
+
+                    // JSON cevabını çözümle
+                    if (translateResponse.IsSuccessStatusCode)
+                    {
+                        var translateDoc = JsonDocument.Parse(translateResponseString);
+                        var englishText = translateDoc.RootElement.GetProperty("translatedText").GetString();
+
+                        ViewBag.v = englishText; // Çeviri sonucu ekrana bastırmak için
+                        createMessageDto.MessageDetails = englishText; // İstersen çeviriyi veritabanına kaydet
+                    }
+                    else
+                    {
+                        ViewBag.error = $"Çeviri hatası: {translateResponse.StatusCode}";
+                    }
+                }
+
+                // 2️⃣ Veritabanına mesajı kaydetme
+                createMessageDto.SendDate = DateTime.Now;
+                createMessageDto.IsRead = false;
+                createMessageDto.Status = "Aktif"; // API tarafında zorunlu alan
+
+                var client2 = _httpClientFactory.CreateClient();
+                var jsonData = JsonConvert.SerializeObject(createMessageDto);
+                var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                var responseMessage = await client2.PostAsync("https://localhost:7162/api/Messages", stringContent);
+
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("MessageList");
+                }
+
+                var error = await responseMessage.Content.ReadAsStringAsync();
+                ViewBag.ApiError = error;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.error = ex.Message;
+            }
 
             return View(createMessageDto);
         }
