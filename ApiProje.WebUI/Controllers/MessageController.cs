@@ -88,87 +88,75 @@ namespace ApiProject.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage(CreateMessageDto createMessageDto)
         {
-            if (string.IsNullOrWhiteSpace(createMessageDto.MessageDetails))
-            {
-                ViewBag.error = "Mesaj boş olamaz.";
-                return View(createMessageDto);
-            }
 
-            // 1️⃣ Perspective API ile toksisite analizi
-            double toxicityScore = 0.0;
+            // 1) Çeviri: LibreTranslate kullanımı (örnek)
+            string originalText = createMessageDto.MessageDetails;
+            string translatedText = originalText;
             try
             {
                 using var client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", perspectiveApiKey);
+                var requestBody = new { q = originalText, source = "tr", target = "en" };
+                var bodyJson = System.Text.Json.JsonSerializer.Serialize(requestBody);
+                var content = new StringContent(bodyJson, Encoding.UTF8, "application/json");
 
-                var requestObj = new
-                {
-                    comment = new { text = createMessageDto.MessageDetails },
-                    requestedAttributes = new { TOXICITY = new { } }
-                };
-
-                string reqJson = JsonSerializer.Serialize(requestObj);
-                var content = new StringContent(reqJson, Encoding.UTF8, "application/json");
-
-                var resp = await client.PostAsync("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=" + perspectiveApiKey, content);
-                if (resp.IsSuccessStatusCode)
-                {
-                    string respJson = await resp.Content.ReadAsStringAsync();
-                    using var doc = JsonDocument.Parse(respJson);
-                    var score = doc.RootElement
-                        .GetProperty("attributeScores")
-                        .GetProperty("TOXICITY")
-                        .GetProperty("summaryScore")
-                        .GetProperty("value")
-                        .GetDouble();
-
-                    toxicityScore = score;
-                }
+                // LibreTranslate’ın endpoint’i: örnek “https://libretranslate.com/translate”
+                var response = await client.PostAsync("https://libretranslate.com/translate", content);
+                var respString = await response.Content.ReadAsStringAsync();
+                // Burada JSON parse edip translatedText’e alman gerekir
+                // … parse kısmı basitleştirildi …
+                var doc = JsonDocument.Parse(respString);
+                translatedText = doc.RootElement.GetProperty("translatedText").GetString();
             }
-            catch (Exception ex)
+            catch
             {
-                // Hata olursa message “Onay Bekliyor” olsun
-                createMessageDto.Status = "Onay Bekliyor";
-                goto SendToBackend;
+                // Çeviri başarısızsa orijinal metni kullan
+                translatedText = originalText;
             }
 
-            // 2️⃣ Toksikse kaydetme
-            if (toxicityScore >= 0.5)
+            // 2) Toksisite kontrolü: örneğin Perspective API veya Detoxify
+            bool isToxic = false;
+            try
             {
+                using var client2 = new HttpClient();
+                var toxicRequest = new { comment = new { text = translatedText } };
+                var toxicJson = System.Text.Json.JsonSerializer.Serialize(toxicRequest);
+                var toxicContent = new StringContent(toxicJson, Encoding.UTF8, "application/json");
+
+                // Perspektif API kullanım örneği
+                client2.DefaultRequestHeaders.Add("Authorization", "Bearer YOUR_KEY");
+                var toxicResp = await client2.PostAsync("https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=YOUR_KEY", toxicContent);
+                var toxicStr = await toxicResp.Content.ReadAsStringAsync();
+                var doc2 = JsonDocument.Parse(toxicStr);
+                var score = doc2.RootElement
+                              .GetProperty("attributeScores")
+                              .GetProperty("TOXICITY")
+                              .GetProperty("summaryScore")
+                              .GetProperty("value")
+                              .GetDouble();
+
+                if (score > 0.5) isToxic = true;
+            }
+            catch
+            {
+                // Hata durumunda toksik olarak işaretleme ya da beklemede bırakabilirsin
+                isToxic = false;
+            }
+
+            if (isToxic)
                 createMessageDto.Status = "Toksik Mesaj";
-                goto SendToBackend;
-            }
+            else
+                createMessageDto.Status = "Mesaj Alındı";
 
-            // 3️⃣ Toksik değilse "Aktif" değil, senin istediğin mantığa göre kaydet
-            // Mesaj henüz okunmamış olacak, IsRead = false
-            createMessageDto.IsRead = false;
-            createMessageDto.SendDate = DateTime.Now;
-        // Eğer okunmamışsa Status = NULL (yani burada hiç atama yapma)
-        // Yani sadece okununca veya işlem sonrası status atanacak
-
-        SendToBackend:
+            // 3) Mesajı kaydet
+            var client3 = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(createMessageDto);
+            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await client3.PostAsync("https://localhost:7162/api/Messages", stringContent);
+            if (responseMessage.IsSuccessStatusCode)
             {
-                // 4️⃣ Mesajı backend’e gönder
-                var client2 = _httpClientFactory.CreateClient();
-                // Eğer Status boşsa JSON’da null olarak gidecek
-                var jsonData = JsonConvert.SerializeObject(createMessageDto,
-                    new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include });
-                var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                var resp2 = await client2.PostAsync("https://localhost:7162/api/Messages", stringContent);
-
-                if (resp2.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("MessageList");
-                }
-                else
-                {
-                    string err = await resp2.Content.ReadAsStringAsync();
-                    ViewBag.ApiError = err;
-                }
+                return RedirectToAction("MessageList");
             }
-
-            return View(createMessageDto);
+            return View();
         }
     }
 }

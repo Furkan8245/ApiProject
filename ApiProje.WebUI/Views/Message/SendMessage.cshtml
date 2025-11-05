@@ -1,36 +1,27 @@
 ﻿@model CreateMessageDto
 
-<form asp-action="SendMessage" method="post" asp-controller="Message" class="form-modern php-email-form" data-aos="fade-up" data-aos-delay="600">
-
-    <!-- Mesaj Kutuları -->
-    <div class="message-box sent-message">Mesajınız başarıyla gönderildi! ✅</div>
-    <div class="message-box error-message">Bir hata oluştu. ❌</div>
-    <div class="message-box loading">Gönderiliyor...</div>
-
+<form asp-action="SendMessage" method="post" asp-controller="Message" class="php-email-form" data-aos="fade-up" data-aos-delay="600">
     <div class="row gy-4">
-        <div class="col-md-6">
-            <input type="text" asp-for="NameSurname" class="form-control" placeholder="Adınız Soyadınız" required>
-        </div>
 
         <div class="col-md-6">
-            <input type="email" asp-for="Email" class="form-control" placeholder="Email Adresiniz" required>
+            <input type="text" asp-for="NameSurname" class="form-control" placeholder="Adınız Soyadınız" required="">
+        </div>
+
+        <div class="col-md-6 ">
+            <input type="email" class="form-control" asp-for="Email" placeholder="Email Adresiniz" required="">
         </div>
 
         <div class="col-md-12">
-            <input type="text" asp-for="Subject" class="form-control" placeholder="Konu" required>
+            <input type="text" class="form-control" asp-for="Subject" placeholder="Konu" required="">
         </div>
 
         <div class="col-md-12">
-            <textarea asp-for="MessageDetails" class="form-control" rows="6" placeholder="Mesajınız" required></textarea>
+            <textarea class="form-control" asp-for="MessageDetails" rows="6" placeholder="Mesajınız" required=""></textarea>
         </div>
 
         <div class="col-md-12 text-center">
-            <button type="submit" class="btn-submit">Mesajı Gönder</button>
+            <button type="submit">Mesajı Gönder</button>
         </div>
+
     </div>
-</form>
-
-
-
-
-<!-- End Contact Form -->
+</form><!-- End Contact Form -->
