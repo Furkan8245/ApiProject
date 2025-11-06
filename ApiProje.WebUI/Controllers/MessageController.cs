@@ -50,7 +50,7 @@ namespace ApiProject.WebUI.Controllers
             {
                 return RedirectToAction("MessageList");
             }
-            return View(createMessageDto);
+            return View();
         }
 
         public async Task<IActionResult> DeleteMessage(int id)
