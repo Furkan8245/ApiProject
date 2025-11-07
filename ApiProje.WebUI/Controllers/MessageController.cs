@@ -80,6 +80,65 @@ namespace ApiProject.WebUI.Controllers
             return RedirectToAction("MessageList");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AnswerMessageWithGemini(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("https://localhost:7162/api/Messages/GetMessage?id=" + id);
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                ViewBag.answerAI = "Mesaj alınamadı. API erişimi başarısız oldu.";
+                return View();
+            }
+
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var value = JsonConvert.DeserializeObject<GetByIdMessageDto>(jsonData);
+            var prompt = value.MessageDetails;
+
+            var apiKey = "AIzaSyCAQt1Zi9zPJzm9U3eudXgiV5tCJyKiw7Q"; // 🔒 Buraya Gemini API anahtarını gir
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+            var requestData = new
+            {
+                contents = new[]
+                {
+            new
+            {
+                parts = new[]
+                {
+                    new { text = "Sen bir restoran için kullanıcıların gönderdikleri mesajlara kibar, çözüm odaklı ve müşteri memnuniyetini artıracak cevaplar veren bir asistansın." },
+                    new { text = prompt }
+                }
+            }
+        }
+            };
+
+            var response = await httpClient.PostAsJsonAsync(
+                "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + apiKey,
+                requestData
+            );
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseJson = await response.Content.ReadAsStringAsync();
+                dynamic result = JsonConvert.DeserializeObject(responseJson);
+
+                // Gemini yanıtını al
+                string answer = result.candidates[0].content.parts[0].text;
+                ViewBag.answerAI = answer;
+            }
+            else
+            {
+                ViewBag.answerAI = "Bir hata oluştu: " + response.StatusCode;
+            }
+
+            return View(value);
+        }
+
+
         public PartialViewResult SendMessage()
         {
             return PartialView();
